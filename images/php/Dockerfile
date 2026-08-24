@@ -104,12 +104,16 @@ RUN groupadd -r user \
 USER user
 WORKDIR /home/user
 
-# nub writes its shims here (per-user, XDG), so this has to run as `user` and
-# not as root. Setting PATH explicitly is what makes the shims work: `nub pm
-# shim` otherwise relies on editing .bashrc, which a non-interactive CI shell
-# never sources.
-ENV PATH=/home/user/.local/share/nub/shims:${PATH}
-RUN nub pm shim
+# nub writes its shims under $HOME, so this runs as `user`, not root. Setting
+# PATH explicitly is what makes them work: `nub pm shim` otherwise relies on
+# editing .profile, which a non-interactive CI shell never sources.
+#
+# The for loop fixes the hardlink of the shims to the nub binary
+ENV PATH=/home/user/.nub/shims:${PATH}
+RUN nub pm shim \
+    && cd /home/user/.nub/shims \
+    && for f in npx pnpm pnpx yarn yarnpkg; do ln -f npm "$f"; done \
+    && test -x /home/user/.nub/shims/pnpm
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

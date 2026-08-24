@@ -43,6 +43,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=php-${{ matrix.php }}
           cache-to: type=gha,scope=php-${{ matrix.php }},mode=min
+          # the weekly run exists to pick up apt security updates, which a cache hit would skip entirely
+          no-cache: ${{ github.event_name == 'schedule' }}
           push: true
           tags: |
             keepsuit/gitlab-ci-php:${{ matrix.php }}
@@ -84,6 +86,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=php-browsers-${{ matrix.php }}
           cache-to: type=gha,scope=php-browsers-${{ matrix.php }},mode=min
+          # the weekly run exists to pick up apt security updates, which a cache hit would skip entirely
+          no-cache: ${{ github.event_name == 'schedule' }}
           push: true
           tags: |
             keepsuit/gitlab-ci-php:${{ matrix.php }}-browsers
