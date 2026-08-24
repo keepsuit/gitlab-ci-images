@@ -72,3 +72,7 @@ docker build -t gitlab-ci-php-browsers:local --build-arg BASE_IMAGE=gitlab-ci-ph
 
 Images are built and pushed for `linux/amd64` and `linux/arm64` on every push to
 `main`, weekly on Sunday, and on manual dispatch.
+
+Requires two repository secrets: `DOCKER_HUB_USERNAME` and `DOCKER_HUB_TOKEN`.
+That account needs push access to both `keepsuit/gitlab-ci-php` and the legacy
+`cappuc/gitlab-ci-laravel`.

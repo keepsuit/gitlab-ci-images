@@ -30,7 +30,7 @@ jobs:
       - name: Login to Docker hub
         uses: docker/login-action@v4
         with:
-          username: keepsuit
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       # legacy cappuc/gitlab-ci-laravel tags are kept for existing projects (php + php-browsers only)
@@ -70,7 +70,7 @@ jobs:
       - name: Login to Docker hub
         uses: docker/login-action@v4
         with:
-          username: keepsuit
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       # legacy cappuc/gitlab-ci-laravel tags are kept for existing projects (php + php-browsers only)
