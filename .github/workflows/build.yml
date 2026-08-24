@@ -3,19 +3,19 @@ name: build
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 0 * * 0"
   workflow_dispatch:
 
 jobs:
-  base:
+  php:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php: [8.5, 8.4, 8.3]
+        php: ['8.5', '8.4', '8.3']
 
     steps:
       - name: Checkout code
@@ -30,29 +30,32 @@ jobs:
       - name: Login to Docker hub
         uses: docker/login-action@v4
         with:
-          username: cappuc
+          username: keepsuit
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      # legacy cappuc/gitlab-ci-laravel tags are kept for existing projects (php + php-browsers only)
       - name: Build docker image
         uses: docker/build-push-action@v7
         with:
-          context: .
-          file: ./${{ matrix.dockerfile || 'stable.Dockerfile' }}
+          context: ./images/php
           build-args: |
             PHP_VERSION=${{ matrix.php }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=php-${{ matrix.php }}
           cache-to: type=gha,scope=php-${{ matrix.php }},mode=min
           push: true
-          tags: cappuc/gitlab-ci-laravel:php${{ matrix.php }}
+          tags: |
+            keepsuit/gitlab-ci-php:${{ matrix.php }}
+            cappuc/gitlab-ci-laravel:php${{ matrix.php }}
 
-  browsers:
+  php-browsers:
     runs-on: ubuntu-latest
-    needs: [base]
+    needs: [php]
 
     strategy:
+      fail-fast: false
       matrix:
-        php: [8.5, 8.4, 8.3]
+        php: ['8.5', '8.4', '8.3']
 
     steps:
       - name: Checkout code
@@ -67,16 +70,21 @@ jobs:
       - name: Login to Docker hub
         uses: docker/login-action@v4
         with:
-          username: cappuc
+          username: keepsuit
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      # legacy cappuc/gitlab-ci-laravel tags are kept for existing projects (php + php-browsers only)
       - name: Build docker image
         uses: docker/build-push-action@v7
         with:
-          context: .
-          file: ./browsers.Dockerfile
+          context: ./images/php
+          file: ./images/php/browsers.Dockerfile
           build-args: |
-            IMAGE_TAG=php${{ matrix.php }}
+            BASE_IMAGE=keepsuit/gitlab-ci-php:${{ matrix.php }}
           platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=php-browsers-${{ matrix.php }}
+          cache-to: type=gha,scope=php-browsers-${{ matrix.php }},mode=min
           push: true
-          tags: cappuc/gitlab-ci-laravel:php${{ matrix.php }}-browsers
+          tags: |
+            keepsuit/gitlab-ci-php:${{ matrix.php }}-browsers
+            cappuc/gitlab-ci-laravel:php${{ matrix.php }}-browsers

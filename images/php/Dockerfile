@@ -35,21 +35,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 
-# FROM base AS php-extensions
-# ARG TARGETPLATFORM
-
-# RUN apt-get install -y \
-#     libyaml-dev \
-#     libz-dev \
-#     php${PHP_VERSION}-dev \
-#     php${PHP_VERSION}-xml \
-#     php-pear
-
-# RUN pecl install protobuf
-
-# RUN mkdir -p /out \
-#     && cp $(php-config --extension-dir)/protobuf.so /out/protobuf.so
-
 
 FROM base
 
@@ -100,9 +85,6 @@ RUN curl -sSfL https://github.com/php/pie/releases/latest/download/pie.phar -o /
 
 RUN pie install -n bsn4/grpc
 
-# COPY --from=php-extensions /out/*.so /usr/lib/extensions
-# RUN echo "extension=protobuf.so" > /etc/php/${PHP_VERSION}/mods-available/protobuf.ini && phpenmod protobuf
-
 # Install yarn & pnpm
 RUN corepack enable
 
@@ -116,7 +98,7 @@ RUN curl -fsSL https://bun.sh/install | bash \
     && rm -rf /root/.bun \
     && chmod a+x /usr/local/bin/bun
 
-COPY php $PHP_INI_DIR/conf.d
+COPY conf.d $PHP_INI_DIR/conf.d
 
 # Add non-privileged user
 RUN groupadd -r user \

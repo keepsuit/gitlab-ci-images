@@ -2,10 +2,10 @@
 set -e
 
 # With env variable WITH_XDEBUG=1 xdebug extension will be enabled
-[ ! -z "$WITH_XDEBUG" ] && sudo -E docker-php-ext-enable xdebug
+[ ! -z "$WITH_XDEBUG" ] && sudo phpenmod xdebug
 
 # With env variable WITH_PCOV=1 pcov extension will be enabled
-[ ! -z "$WITH_PCOV" ] && sudo -E docker-php-ext-enable pcov
+[ ! -z "$WITH_PCOV" ] && sudo phpenmod pcov
 
 # Provide github token if you are using composer a lot in non-interactive mode
 # Otherwise one day it will get stuck with request for authorization

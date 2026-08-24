@@ -1,10 +1,13 @@
-ARG IMAGE_TAG=php8.4
-FROM cappuc/gitlab-ci-laravel:${IMAGE_TAG}
+# syntax=docker/dockerfile:1
+
+ARG BASE_IMAGE=keepsuit/gitlab-ci-php:8.4
+FROM ${BASE_IMAGE}
 
 # Install packages
 RUN sudo apt-get update && sudo apt-get install -y \
     chromium \
-    chromium-driver
+    chromium-driver \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 # Install puppeteer
 ENV PUPPETEER_SKIP_DOWNLOAD=true
