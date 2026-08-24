@@ -8,7 +8,7 @@ PHP images are published to [`keepsuit/gitlab-ci-php`](https://hub.docker.com/r/
 
 | Tags | Contents |
 | --- | --- |
-| `8.5`, `8.4`, `8.3` | PHP (cli + common extensions), Composer, PIE, Node, yarn/pnpm (corepack), bun, git |
+| `8.5`, `8.4`, `8.3` | PHP (cli + common extensions), Composer, PIE, Node, nub, bun, git |
 | `8.5-browsers`, `8.4-browsers`, `8.3-browsers` | the above + Chromium, Puppeteer, Playwright system deps |
 
 Legacy tags `cappuc/gitlab-ci-laravel:php8.4` and `cappuc/gitlab-ci-laravel:php8.4-browsers`
@@ -39,6 +39,23 @@ Handled by the entrypoint:
 | `COMPOSER_KEEPSUIT` | sets http-basic auth for `composer.keepsuit.com` |
 
 Images run as the non-root `user`, which has passwordless `sudo`.
+
+### Package managers
+
+[nub](https://github.com/nubjs/nub) replaces corepack, which was
+[unbundled from Node in v25](https://github.com/nodejs/nodejs.org/issues/7555).
+`nub pm shim` runs at build time, so `npm`, `yarn` and `pnpm` resolve to the
+version your project pins in `packageManager` with no setup in the job. Projects
+without a pin still work: nub infers the version from the committed lockfile and
+warns.
+
+`nub` itself is available too (`nub install`, `nub run build`, `nubx ...`).
+
+`corepack` is stubbed with a script that prints a warning and exits 0, so a
+`corepack enable` left in an existing pipeline does not fail the job. Remove
+those calls when convenient.
+
+Pin nub with the `NUB_VERSION` build arg; it defaults to `latest`.
 
 ## Repository layout
 
