@@ -81,7 +81,7 @@ RUN npm install -g @nubjs/nub@${NUB_VERSION} \
 
 # Shadow the corepack Node still bundles, so pipelines that call `corepack
 # enable` warn instead of failing the job.
-COPY --chmod=755 corepack.sh /usr/local/bin/corepack
+COPY --chmod=755 shared/corepack.sh /usr/local/bin/corepack
 
 # Install composer
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
@@ -89,7 +89,7 @@ COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 # Install bun
 COPY --from=oven/bun:1 /usr/local/bin/bun /usr/local/bin/bun
 
-COPY conf.d $PHP_INI_DIR/conf.d
+COPY php/conf.d $PHP_INI_DIR/conf.d
 
 # Add non-privileged user
 RUN groupadd -r user \
@@ -115,6 +115,6 @@ RUN nub pm shim \
     && for f in npx pnpm pnpx yarn yarnpkg; do ln -f npm "$f"; done \
     && test -x /home/user/.nub/shims/pnpm
 
-COPY entrypoint.sh /entrypoint.sh
+COPY php/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]

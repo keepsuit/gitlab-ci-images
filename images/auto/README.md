@@ -2,7 +2,7 @@
 
 The opposite of the PHP image: nothing is baked in except
 [mise](https://mise.jdx.dev), which provisions whatever the project pins. Meant
-for Node projects and deploy jobs — aws-cli, helm, kubectl.
+for deploy jobs and projects that need tools such as aws-cli, helm or kubectl.
 
 | Tags     | Contents        |
 | -------- | --------------- |

@@ -37,7 +37,8 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v7
         with:
-          context: ./images/php
+          context: ./images
+          file: ./images/php/Dockerfile
           build-args: |
             PHP_VERSION=${{ matrix.php }}
           platforms: linux/amd64,linux/arm64
@@ -123,3 +124,42 @@ jobs:
           no-cache: ${{ github.event_name == 'schedule' }}
           push: true
           tags: keepsuit/gitlab-ci-auto:latest
+
+  node:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['24', '26']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to Docker hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./images
+          file: ./images/node/Dockerfile
+          build-args: |
+            NODE_VERSION=${{ matrix.node }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=node-${{ matrix.node }}
+          cache-to: type=gha,scope=node-${{ matrix.node }},mode=min
+          # the weekly run exists to pick up apt security updates, which a cache hit would skip entirely
+          no-cache: ${{ github.event_name == 'schedule' }}
+          push: true
+          tags: keepsuit/gitlab-ci-node:${{ matrix.node }}

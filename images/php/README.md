@@ -62,7 +62,8 @@ those calls when convenient.
 ## Building locally
 
 ```bash
-docker build -t gitlab-ci-php:local --build-arg PHP_VERSION=8.4 images/php
+docker build -f images/php/Dockerfile -t gitlab-ci-php:local \
+  --build-arg PHP_VERSION=8.4 images
 docker build -t gitlab-ci-php-browsers:local \
   --build-arg BASE_IMAGE=gitlab-ci-php:local \
   -f images/php/browsers.Dockerfile images/php
