@@ -50,13 +50,14 @@ RUN groupadd -r user \
 USER user
 WORKDIR /home/user
 
-# nub writes its shims under $HOME, so this runs as `user`, not root. Setting
-# PATH explicitly is what makes them work: `nub pm shim` otherwise relies on
-# editing .profile, which a non-interactive CI shell never sources.
-ENV PATH=/home/user/.nub/shims:${PATH}
+# nub writes its shims under the XDG data directory, so this runs as `user`,
+# not root. Setting PATH explicitly is what makes them work: `nub pm shim`
+# otherwise relies on editing .profile, which a non-interactive CI shell never
+# sources.
+ENV PATH=/home/user/.local/share/nub/shims:${PATH}
 RUN nub pm shim \
-    && cd /home/user/.nub/shims \
+    && cd /home/user/.local/share/nub/shims \
     && for f in npx pnpm pnpx yarn yarnpkg; do ln -f npm "$f"; done \
-    && test -x /home/user/.nub/shims/pnpm
+    && test -x /home/user/.local/share/nub/shims/pnpm
 
 CMD ["bash"]
