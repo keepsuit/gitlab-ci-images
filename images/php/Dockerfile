@@ -88,9 +88,6 @@ COPY --chmod=755 shared/corepack.sh /usr/local/bin/corepack
 # Install composer
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 
-# Install bun
-COPY --from=oven/bun:1 /usr/local/bin/bun /usr/local/bin/bun
-
 COPY php/conf.d $PHP_INI_DIR/conf.d
 
 # Add non-privileged user
