@@ -31,6 +31,7 @@ RUN apt-get update \
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
+    ffmpeg \
     git \
     nodejs \
     sudo \
@@ -55,6 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php${PHP_VERSION}-pcov \
     php${PHP_VERSION}-mysql \
     php${PHP_VERSION}-protobuf \
+    php${PHP_VERSION}-pgsql \
     php${PHP_VERSION}-redis \
     php${PHP_VERSION}-soap \
     php${PHP_VERSION}-sockets \
