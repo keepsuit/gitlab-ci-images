@@ -6,7 +6,6 @@ ARG DEBIAN_VERSION=trixie
 FROM debian:${DEBIAN_VERSION}-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
-# mise repository.
 # gnupg is only needed to dearmor the key, so it is purged in the same layer.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
@@ -17,7 +16,6 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Install packages
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -28,7 +26,6 @@ RUN apt-get update \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Add non-privileged user
 RUN groupadd -r user \
     && useradd -r -g user -G sudo user \
     && mkdir -p /home/user \
@@ -37,7 +34,6 @@ RUN groupadd -r user \
     && chown -R user:user /builds \
     && echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Run everything after as non-privileged user.
 USER user
 WORKDIR /home/user
 

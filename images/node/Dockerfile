@@ -9,7 +9,6 @@ FROM debian:${DEBIAN_VERSION}-slim
 ARG NODE_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Configure the NodeSource repository.
 # gnupg is only needed by the setup script, so it is purged in the same layer.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
@@ -18,7 +17,6 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Install packages.
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -29,7 +27,6 @@ RUN apt-get update \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install nub, which provides the npm/yarn/pnpm shims in place of corepack.
 ARG NUB_VERSION
 RUN npm install -g @nubjs/nub@${NUB_VERSION} \
     && npm cache clean --force
@@ -37,7 +34,6 @@ RUN npm install -g @nubjs/nub@${NUB_VERSION} \
 # Keep existing pipelines that call `corepack enable` from failing.
 COPY --chmod=755 shared/corepack.sh /usr/local/bin/corepack
 
-# Add non-privileged user.
 RUN groupadd -r user \
     && useradd -r -g user -G audio,video,sudo user \
     && mkdir -p /home/user \
@@ -46,7 +42,6 @@ RUN groupadd -r user \
     && chown -R user:user /builds \
     && echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Run everything after as non-privileged user.
 USER user
 WORKDIR /home/user
 

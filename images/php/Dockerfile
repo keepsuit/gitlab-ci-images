@@ -13,7 +13,6 @@ ARG PHP_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PHP_INI_DIR=/etc/php/${PHP_VERSION}/cli
 
-# Configure the node and php apt repositories.
 # gnupg is only needed by the nodesource setup script, so it is purged in the
 # same layer to keep it out of the image.
 RUN apt-get update \
@@ -27,7 +26,6 @@ RUN apt-get update \
     && rm -f /tmp/debsuryorg-archive-keyring.deb \
     && rm -rf /var/lib/apt/lists/*
 
-# Install packages
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -39,7 +37,6 @@ RUN apt-get update \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install php & extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-cli \
@@ -69,14 +66,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && phpdismod pcov \
     && phpdismod xdebug
 
-# Install pie & grpc, then drop the installer
 RUN ln -s $(php -r 'echo ini_get("extension_dir");') /usr/lib/extensions \
     && curl -sSfL https://github.com/php/pie/releases/latest/download/pie.phar -o /usr/local/bin/pie \
     && chmod +x /usr/local/bin/pie \
     && pie install -n bsn4/grpc \
     && rm -rf /root/.cache /tmp/*
 
-# Install nub, which provides the npm/yarn/pnpm shims in place of corepack.
 ARG NUB_VERSION
 RUN npm install -g @nubjs/nub@${NUB_VERSION} \
     && npm cache clean --force
@@ -85,12 +80,10 @@ RUN npm install -g @nubjs/nub@${NUB_VERSION} \
 # enable` warn instead of failing the job.
 COPY --chmod=755 shared/corepack.sh /usr/local/bin/corepack
 
-# Install composer
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
 
 COPY php/conf.d $PHP_INI_DIR/conf.d
 
-# Add non-privileged user
 RUN groupadd -r user \
     && useradd -r -g user -G audio,video,sudo user \
     && mkdir -p /home/user \
@@ -99,7 +92,6 @@ RUN groupadd -r user \
     && chown -R user:user /builds \
     && echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Run everything after as non-privileged user.
 USER user
 WORKDIR /home/user
 
@@ -107,8 +99,6 @@ WORKDIR /home/user
 # not root. Setting PATH explicitly is what makes them work: `nub pm shim`
 # otherwise relies on editing .profile, which a non-interactive CI shell never
 # sources.
-#
-# The for loop fixes the hardlink of the shims to the nub binary
 ENV PATH=/home/user/.local/share/nub/shims:${PATH}
 RUN nub pm shim \
     && cd /home/user/.local/share/nub/shims \
