@@ -31,6 +31,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     ffmpeg \
     git \
+    libmagickcore-7.q16-10-extra \
+    libvips42t64 \
     nodejs \
     sudo \
     tzdata \
