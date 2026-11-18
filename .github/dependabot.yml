@@ -10,7 +10,8 @@ updates:
     labels:
       - "dependencies"
   - package-ecosystem: "docker"
-    directory: "/images/buildkit"
+    directories:
+      - "/images/*"
     schedule:
       interval: "weekly"
     labels:
