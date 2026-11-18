@@ -9,3 +9,10 @@ updates:
       interval: "weekly"
     labels:
       - "dependencies"
+  - package-ecosystem: "docker"
+    directories:
+      - "/images/*"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
