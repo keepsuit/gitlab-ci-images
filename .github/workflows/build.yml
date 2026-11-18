@@ -170,7 +170,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: ['rootless', 'root']
+        include:
+          - variant: rootless
+            file: rootless.Dockerfile
+          - variant: root
+            file: Dockerfile
 
     steps:
       - name: Checkout code
@@ -197,7 +201,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ./images/buildkit
-          target: ${{ matrix.variant }}
+          file: ./images/buildkit/${{ matrix.file }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=buildkit-${{ matrix.variant }}
           cache-to: type=gha,scope=buildkit-${{ matrix.variant }},mode=min

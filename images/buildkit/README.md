@@ -29,11 +29,12 @@ On Ubuntu 24.04 nodes the default AppArmor profile stops `rootlesskit` with
 
 ## Upgrading BuildKit
 
-Bump both `FROM` lines in the Dockerfile (dependabot does it), merge, then move
-the tag in `ci-templates`. Old tags stay on Docker Hub as a rollback.
+Bump the `FROM` line in both `Dockerfile` and `rootless.Dockerfile` (dependabot
+does it), merge, then move the tag in `ci-templates`. The tag version is read
+from `Dockerfile`. Old tags stay on Docker Hub as a rollback.
 
 ## Building locally
 
 ```bash
-docker build --target rootless -t gitlab-ci-buildkit:rootless images/buildkit
+docker build -f images/buildkit/rootless.Dockerfile -t gitlab-ci-buildkit:rootless images/buildkit
 ```
