@@ -5,13 +5,14 @@
 runs as uid 1000 and cannot `apk add` at job time, which is why the tools are
 baked in.
 
-| Tags                 | Runs as  | Runner needs                                    |
-| -------------------- | -------- | ----------------------------------------------- |
-| `<version>-rootless` | uid 1000 | AppArmor `Unconfined` on the build container    |
-| `<version>-root`     | root     | `privileged = true`                             |
+| Tags                               | Runs as  | Runner needs                                 |
+| ---------------------------------- | -------- | -------------------------------------------- |
+| `rootless`, `<version>-rootless`   | uid 1000 | AppArmor `Unconfined` on the build container |
+| `root`, `<version>-root`           | root     | `privileged = true`                          |
 
-`<version>` is the BuildKit release, e.g. `v0.34.2`. The weekly rebuild
-overwrites the same tag with Alpine security updates.
+`rootless` and `root` follow the latest BuildKit release. `<version>` is the
+BuildKit minor, e.g. `v0.34`, and follows its patch releases. The weekly
+rebuild overwrites all tags with Alpine security updates.
 
 ## Rootless
 
@@ -30,8 +31,9 @@ On Ubuntu 24.04 nodes the default AppArmor profile stops `rootlesskit` with
 ## Upgrading BuildKit
 
 Bump the `FROM` line in both `Dockerfile` and `rootless.Dockerfile` (dependabot
-does it), merge, then move the tag in `ci-templates`. The tag version is read
-from `Dockerfile`. Old tags stay on Docker Hub as a rollback.
+does it) and merge: `ci-templates` uses the floating tags and picks it up. The
+tag version is read from `Dockerfile`. If an upgrade breaks, pin `ci-templates`
+to the previous `<version>-*` tag, which stays on Docker Hub.
 
 ## Building locally
 

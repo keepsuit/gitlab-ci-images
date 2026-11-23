@@ -9,7 +9,7 @@ Docker images for GitLab CI jobs (testing, asset building, deploys).
 | [`keepsuit/gitlab-ci-php`](images/php/README.md)   | `8.5`, `8.4`, `8.3` (+ `-browsers`) | PHP / Laravel test and asset jobs. Everything baked in.                    |
 | [`keepsuit/gitlab-ci-node`](images/node/README.md) | `24`, `26`                          | Node projects. Node and nub are ready at process start.                    |
 | [`keepsuit/gitlab-ci-auto`](images/auto/README.md) | `latest`                            | Deploy jobs and projects that need mise-managed tools.                    |
-| [`keepsuit/gitlab-ci-buildkit`](images/buildkit/README.md) | `<version>-rootless`, `<version>-root` | Image builds through the `docker-buildkit` template in `ci-templates`. |
+| [`keepsuit/gitlab-ci-buildkit`](images/buildkit/README.md) | `rootless`, `root`, `<version>-rootless`, `<version>-root` | Image builds through the `docker-buildkit` template in `ci-templates`. |
 
 Each image's README covers its usage, environment variables and build args.
 Docker Hub: [gitlab-ci-php](https://hub.docker.com/r/keepsuit/gitlab-ci-php),

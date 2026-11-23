@@ -180,10 +180,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      # the tag carries the BuildKit version so ci-templates opts into each upgrade explicitly
+      # the minor tag is a rollback target for ci-templates if a BuildKit upgrade breaks the floating tag
       - name: Read BuildKit version
         id: version
-        run: echo "buildkit=$(sed -n 's|^FROM moby/buildkit:\(v[0-9.]*\).*|\1|p' images/buildkit/Dockerfile | head -1)" >> "$GITHUB_OUTPUT"
+        run: echo "buildkit=$(sed -n 's|^FROM moby/buildkit:\(v[0-9]*\.[0-9]*\).*|\1|p' images/buildkit/Dockerfile | head -1)" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
@@ -208,4 +208,6 @@ jobs:
           # the weekly run exists to pick up apk security updates, which a cache hit would skip entirely
           no-cache: ${{ github.event_name == 'schedule' }}
           push: true
-          tags: keepsuit/gitlab-ci-buildkit:${{ steps.version.outputs.buildkit }}-${{ matrix.variant }}
+          tags: |
+            keepsuit/gitlab-ci-buildkit:${{ matrix.variant }}
+            keepsuit/gitlab-ci-buildkit:${{ steps.version.outputs.buildkit }}-${{ matrix.variant }}
