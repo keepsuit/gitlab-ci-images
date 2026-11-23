@@ -6,8 +6,8 @@ Composer, PIE, Node, nub and git.
 
 | Tags                                           | Contents                                                          |
 | ---------------------------------------------- | ----------------------------------------------------------------- |
-| `8.5`, `8.4`, `8.3`                            | PHP (cli + common extensions), PostgreSQL, MySQL, SQLite, FFmpeg, libvips, Composer, PIE, Node, nub, git |
-| `8.5-browsers`, `8.4-browsers`, `8.3-browsers` | the above + Chromium, Puppeteer, Playwright system deps                              |
+| `8.6`, `8.5`, `8.4`, `8.3`                     | PHP (cli + common extensions), PostgreSQL, MySQL, SQLite, FFmpeg, libvips, Composer, PIE, Node, nub, git |
+| `8.6-browsers`, `8.5-browsers`, `8.4-browsers`, `8.3-browsers` | the above + Chromium, Puppeteer, Playwright system deps                              |
 
 Legacy tags `cappuc/gitlab-ci-laravel:php8.4` and `cappuc/gitlab-ci-laravel:php8.4-browsers`
 are still published from the same builds. Prefer the `keepsuit` names for new projects.
